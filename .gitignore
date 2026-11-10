@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+test-results/
+playwright-report/
+*.tsbuildinfo
+.env*.local
+.env
+.env.*
+!.env.example
+artifacts/
+recovery/
+Style-refs/
+/fonts/
+*.mp4
+*.log

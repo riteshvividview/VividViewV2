@@ -1,0 +1,62 @@
+[
+  {
+    "path": "public/images/agency/kandasami.webp",
+    "source": "https://framerusercontent.com/images/5zpsTQ72tIs86zCT2ZSBiLoa0I.jpg?width=2800&height=4200",
+    "page": "https://thevividview.in/media-production/kandasami",
+    "sha256": "4c9d18557350044b7448b6ab27a491d8f863184d7c989328822bb216912e9403"
+  },
+  {
+    "path": "public/images/agency/hungry-broz.webp",
+    "source": "https://framerusercontent.com/images/jejO515J0o0GlC8RQ9SpvHjez34.jpg?width=800&height=600",
+    "page": "https://thevividview.in/branding/hungry-broz",
+    "sha256": "f211475dad475c13724b85bf2c834dcd39c377b5765d79a945e0c127d1ab4272"
+  },
+  {
+    "path": "public/images/agency/thvani.webp",
+    "source": "https://framerusercontent.com/images/0uV1Yo9ReC5auzVWH8OtYuV7B4I.jpg?width=800&height=600",
+    "page": "https://thevividview.in/branding/thvani",
+    "sha256": "1314109e069afb0f072b6069197e104b581834232f9e5c0ffd43974c49e54c57"
+  },
+  {
+    "path": "public/images/agency/modern-muse.webp",
+    "source": "https://framerusercontent.com/images/OZaQwOfKzeNmSQgTGiO2XAkIkkk.jpg?width=800&height=600",
+    "page": "https://thevividview.in/branding/modern-muse",
+    "sha256": "4a75b5f147c0ac818d824782fed4eeb2b61f20edb5b1a1c3bd33132e090ab25f"
+  },
+  {
+    "path": "public/images/agency/shadab.webp",
+    "source": "https://framerusercontent.com/images/Ssp82mSRPMnWRrENXtrpPeT7WKE.jpg?width=800&height=600",
+    "page": "https://thevividview.in/branding/shadab",
+    "sha256": "286e9a0993a2c76b5bf2df54338cf34a565dc81d2b110a81457091b031668e27"
+  },
+  {
+    "path": "public/images/agency/cravery.webp",
+    "source": "https://framerusercontent.com/images/zee1HgAZCddceUKBXt79LbsSTKQ.jpg?width=6000&height=4000",
+    "page": "https://thevividview.in/media-production/cravery",
+    "sha256": "b8b7bd4ce839c2115edccca381aed0f27a9139ad1ded7fa1cf008c45045db65f"
+  },
+  {
+    "path": "public/images/agency/lasya.webp",
+    "source": "https://framerusercontent.com/images/LF9swshT6LTsR2zZHLFKmbxbNY.jpg?width=2832&height=3540",
+    "page": "https://thevividview.in/who-are-we",
+    "sha256": "9b8ece13582a27370510a87bbfad5347fe07715e21c23ef81f542049beb92ccc"
+  },
+  {
+    "path": "public/images/agency/jhanvi.webp",
+    "source": "https://framerusercontent.com/images/UzvyC80moAQSboOxUiywvbpuHk.jpg?width=2832&height=3540",
+    "page": "https://thevividview.in/who-are-we",
+    "sha256": "fe0c33f241c6b04857c52ccd8e463064f0bd7a6067b88b8c5a82c3eabd4cfa8f"
+  },
+  {
+    "path": "public/images/agency/chaitanya.webp",
+    "source": "https://framerusercontent.com/images/1XVwX1T3wLCHcjBAtuMRBEiopgY.jpg?width=3024&height=4032",
+    "page": "https://thevividview.in/who-are-we",
+    "sha256": "a13dda156b65c0efab534b79aa5f5792fd353017376ce11c459a5da5064fe4a1"
+  },
+  {
+    "path": "public/images/agency/vivid-view-logo.png",
+    "source": "https://framerusercontent.com/images/2gAAyVbI2Y7gBWNO6ztH91fY2w.png?width=1628&height=875",
+    "page": "https://thevividview.in/",
+    "sha256": "4db37f867227e6ecd1b84fbc804fd1c06db3ff326e1c0d1982c64d20afbca681"
+  }
+]
