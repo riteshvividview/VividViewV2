@@ -24,7 +24,7 @@ export default function SilverFluid({ motion, paused = false }: { motion: Journe
     const brightness={value:1};
     applyGlassOptics(material,brightness);
     return {
-      material, brightness, volume: new LiquidVolume(mobile ? 48 : 64, material),
+      material, brightness, volume: new LiquidVolume(mobile ? 56 : 72, material),
       ray: new THREE.Raycaster(), plane: new THREE.Plane(new THREE.Vector3(0, 0, 1), 1.2),
       hit: new THREE.Vector3(), localPointer: new THREE.Vector2(4, 4),
       time: 0, scrollPhase: 0, accumulated: 0, hover: 0, steps: 0, updateMs: 0,
@@ -88,15 +88,15 @@ export default function SilverFluid({ motion, paused = false }: { motion: Journe
     }
     if (paused) return;
     const dt = Math.min(delta, .1);
-    resources.hover = THREE.MathUtils.damp(resources.hover, active ? 1 : 0, 3, dt);
+    resources.hover = THREE.MathUtils.damp(resources.hover, active ? 1 : 0, 7, dt);
     resources.time += dt * 2.1;
     resources.scrollPhase = THREE.MathUtils.damp(resources.scrollPhase, state.progress * 2.4 + state.hero * .3, 5, dt);
     resources.accumulated += dt;
-    if (resources.accumulated >= 1 / 26) {
+    if (resources.accumulated >= 1 / 30) {
       const start = performance.now();
       resources.volume.update(resources.time, resources.localPointer, resources.hover, resources.scrollPhase);
       resources.updateMs = performance.now() - start;
-      resources.accumulated %= 1 / 26;
+      resources.accumulated %= 1 / 30;
       resources.steps++;
       if (resources.steps % 8 === 0) {
         const element = document.querySelector<HTMLElement>('.journey-canvas');

@@ -23,7 +23,7 @@ export class LiquidVolume {
   }
 
   update(time: number, pointer: THREE.Vector2, touch: number, scrollPhase = 0) {
-    const t = time * .75 + scrollPhase * .7;
+    const t = time * 1.18 + scrollPhase * .7;
     const openness = .5 + .5 * Math.cos(time * .7 + scrollPhase * .25);
     const size = this.mesh.size;
     const field = this.mesh.field;
@@ -56,20 +56,20 @@ export class LiquidVolume {
           const folds = Math.sin(qx * 4.7 + qy * 2.8 + Math.sin(z * 4 - t) * .9 + t)
             * Math.cos(qy * 3.8 - z * 3.4 - t * .7);
           const fold2 = Math.sin(qx * 7.2 - qy * 3.5 + z * 4.3 - t * .8);
-          const shellRadius = .715 + front * (.13 * folds + .045 * fold2);
-          const thickness = .082 + .022 * (.5 + .5 * Math.sin(qy * 5 + z * 4 + t));
+          const shellRadius = .715 + front * (.115 * folds + .015 * fold2);
+          const thickness = .073 + .016 * (.5 + .5 * Math.sin(qy * 5 + z * 4 + t));
           let distance = Math.abs(r - shellRadius) - thickness;
           for (const opening of this.openings) {
-            const hx = qx - opening.x + Math.sin(qy * 6 + opening.phase + z * 2) * .065;
-            const hy = qy - opening.y + Math.sin(qx * 5 - opening.phase + z * 2.4) * .075;
+            const hx = qx - opening.x + Math.sin(qy * 4 + opening.phase + z * 2) * .045;
+            const hy = qy - opening.y + Math.sin(qx * 3.8 - opening.phase + z * 2.4) * .05;
             const hole = Math.sqrt(hx * hx + hy * hy * opening.stretch) - opening.radius;
-            distance = smoothMaximum(distance, -hole, .18);
+            distance = smoothMaximum(distance, -hole, .27);
           }
           field[index] = -distance * 100;
         }
       }
     }
-    for(let pass=0;pass<3;pass++){
+    for(let pass=0;pass<5;pass++){
     this.smoothing.set(field);
     const source=this.smoothing, layer=size*size;
     for(let z=1;z<size-1;z++)for(let y=1;y<size-1;y++)for(let x=1;x<size-1;x++){

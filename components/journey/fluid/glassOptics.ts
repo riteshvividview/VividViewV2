@@ -14,8 +14,8 @@ export function applyGlassOptics(material:MeshPhysicalMaterial,brightness:{value
     `);
     shader.fragmentShader=shader.fragmentShader.replace('#include <opaque_fragment>', `
       float rimFacing=clamp(abs(dot(normal,normalize(vViewPosition))),0.,1.);
-      float softRim=1.-smoothstep(.01,.12,rimFacing);
-      outgoingLight=mix(outgoingLight,max(outgoingLight,vec3(.20,.21,.22)),softRim);
+      float softRim=1.-smoothstep(.015,.22,rimFacing);
+      outgoingLight=mix(outgoingLight,max(outgoingLight,vec3(.34,.35,.36)),softRim);
       outgoingLight*=uSectionBrightness;
       #include <opaque_fragment>
     `);
