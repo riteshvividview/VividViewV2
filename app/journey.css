@@ -272,3 +272,14 @@ html.is-page-loading,html.is-page-loading body{overflow:hidden}
 .motion-on .service-toggle>span:nth-child(2){mix-blend-mode:normal}
 .motion-on .service-toggle>span:nth-child(2)>:is(small,strong){mix-blend-mode:difference}
 .service-toggle strong{position:relative;z-index:1}
+
+/* Scrollbars: thin, site-wide, lime-cream thumb with an olive border on a transparent track. The gutter is reserved
+   so the page doesn't shift when the loader hides and restores the scrollbar. Chromium ignores ::-webkit-scrollbar
+   once scrollbar-color is set (and scrollbar-color can't draw a border), so the standard properties are Firefox-only. */
+html{scrollbar-gutter:stable}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:#E9EB9E transparent}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#E9EB9E;border:1px solid #7D8135;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:#dfe285}
+::-webkit-scrollbar-corner{background:transparent}

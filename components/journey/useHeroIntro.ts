@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import type { JourneyRef } from './types';
 import { LAND_TILT, emitImpact, landY } from './heroIntro';
 
-const NEUTRAL = { introX: 0, introY: 0, introRx: 0, introRy: 0, introRz: 0, squash: 1, bulge: 1, blur: 0, shadow: 0, liquidIntro: 1 };
+const NEUTRAL = { introX: 0, introY: 0, introRx: 0, introRy: 0, introRz: 0, squash: 1, bulge: 1, blur: 0, shadow: 0 };
 
 /**
  * Hero entrance: the box drops from the top centre facing the viewer, hits the ground (squash + dust),
@@ -32,7 +32,7 @@ export function useHeroIntro(motion: JourneyRef, animated: boolean, armed: boole
     const land = { introX: -base.x, introRx: LAND_TILT - base.rx, introRy: -base.ry, introRz: -base.rz };
     const top = (small ? .9 : 1) - base.y;
 
-    Object.assign(state, NEUTRAL, land, { introY: top, introRx: land.introRx + .38, introRy: land.introRy + .1, introRz: land.introRz - .06, blur: 1, shadow: 1, liquidIntro: 0 });
+    Object.assign(state, NEUTRAL, land, { introY: top, introRx: land.introRx + .38, introRy: land.introRy + .1, introRz: land.introRz - .06, blur: 1, shadow: 1 });
     setPlaying(true);
 
     const tl = gsap.timeline({ onComplete: finish });
@@ -86,8 +86,6 @@ export function useHeroIntro(motion: JourneyRef, animated: boolean, armed: boole
     box({ shadow: 0, duration: .3, ease: 'power1.out' }, hop);
     box({ blur: 0, duration: .2 }, hop + hopTime - .2);
 
-    // Liquid swells in from the impact.
-    box({ liquidIntro: 1, duration: 1.8, ease: 'elastic.out(1, .6)' }, hit1 + .08);
 
     // 4. Copy enters first (header, then headline, then supporting lines); the impact later gives it a small jolt.
     const q = (selector: string) => gsap.utils.toArray<HTMLElement>(selector);

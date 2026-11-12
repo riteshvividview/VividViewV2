@@ -114,7 +114,7 @@ export default function HeroImpactFX({ motion }: { motion: JourneyRef }) {
       emitter.front.scale.set(width, height, 1); emitter.front.position.set(x, ground + height * .485, contactZ + .02);
       emitter.back.scale.set(width * behind, height * behind, 1); emitter.back.position.set(x * behind, (ground + height * .485) * behind, box.position.z);
       emitter.back.visible = emitter.front.visible = true;
-      emitter.strength = strength >= .9 ? .95 : .55;
+      emitter.strength = strength >= .9 ? .4 : .24; // kept light: the dust should accent the landing, not cover it
       const { video } = emitter;
       const start = () => { emitter.active = true; video.currentTime = 0; video.playbackRate = Number(document.documentElement.dataset.introSpeed) || 1; video.play().catch(() => { emitter.active = false; }); };
       if (video.readyState >= 3) start();

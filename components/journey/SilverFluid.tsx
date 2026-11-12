@@ -74,7 +74,7 @@ export default function SilverFluid({ motion, paused = false }: { motion: Journe
     const journey = THREE.MathUtils.smoothstep(state.hero, .25, .85);
     const radius = viewport.height * (.56 - journey * .16);
     mesh.position.set(THREE.MathUtils.lerp(.56, state.liquidX * .65, journey) * viewport.width, state.liquidY * viewport.height * .45 * journey, -1.2);
-    mesh.scale.setScalar(radius * 1.2 * Math.max(state.liquidIntro, .0001)); // liquidIntro: swell-in after the hero impact
+    mesh.scale.setScalar(radius * 1.2);
     mesh.rotation.y = resources.time * .25;
     mesh.rotation.z = Math.sin(resources.time * .13) * .045;
     mesh.updateWorldMatrix(true, false);
