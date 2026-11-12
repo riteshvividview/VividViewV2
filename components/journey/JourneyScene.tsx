@@ -10,6 +10,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import CardboardBox from './CardboardBox';
+import HeroImpactFX from './HeroImpactFX';
 import SilverFluid from './SilverFluid';
 import type { JourneyRef } from './types';
 import {applySculptureDissolve} from './sculptureDissolve';
@@ -137,7 +138,17 @@ function Studio({ motion, onReady }: { motion: JourneyRef; onReady: () => void }
   return null;
 }
 
-export default function JourneyScene({ motion, onReady, paused }: { motion: JourneyRef; onReady: () => void; paused: boolean }) {
+// Reports once a canvas has produced a few real frames (shaders compiled, liquid built) so the page loader can finish.
+function RenderedSignal({ onRendered }: { onRendered?: () => void }) {
+  const frames = useRef(0);
+  useFrame(() => { if (++frames.current === 4) onRendered?.(); });
+  return null;
+}
+
+// Called by the page loader once the model is in the HTTP cache: parses it ahead of the people section.
+export function preloadSculpture() { useLoader.preload(GLTFLoader, '/models/chrome-bust.glb'); }
+
+export default function JourneyScene({ motion, onReady, paused, onRendered }: { motion: JourneyRef; onReady: () => void; paused: boolean; onRendered?: () => void }) {
   const [visible, setVisible] = useState(true);
   useEffect(() => { const update = () => setVisible(!document.hidden); document.addEventListener('visibilitychange', update); return () => document.removeEventListener('visibilitychange', update); }, []);
   return <Canvas frameloop={visible && !paused ? 'always' : 'never'} dpr={[1.5, 2]} gl={{ alpha: false, antialias: true, powerPreference: 'high-performance' }} camera={{ position: [0, 0, 10], fov: 40, near: .1, far: 40 }} aria-hidden="true">
@@ -147,7 +158,7 @@ export default function JourneyScene({ motion, onReady, paused }: { motion: Jour
 
     <SilverFluid motion={motion} paused={paused}/>
     <SculptureLight motion={motion}/><Suspense fallback={null}><IlluminatedMind motion={motion}/></Suspense>
-    <Studio motion={motion} onReady={onReady}/>
+    <Studio motion={motion} onReady={onReady}/><RenderedSignal onRendered={onRendered}/>
   </Canvas>;
 }
 
@@ -163,22 +174,65 @@ function ForegroundEnvironment() {
   },[gl,scene,camera]);
   return null;
 }
+// Directional motion blur: the box layer is rendered to a multisampled target, then resolved to the screen
+// with 24 taps along the box's screen-space velocity. Premultiplied in, premultiplied out.
+function useMotionBlur(){
+  const blur=useMemo(()=>{
+    const target=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:4});
+    const uniforms={uMap:{value:target.texture},uVelocity:{value:new THREE.Vector2()}};
+    const material=new THREE.ShaderMaterial({uniforms,transparent:true,premultipliedAlpha:true,depthTest:false,depthWrite:false,
+      vertexShader:'varying vec2 vUv; void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+      fragmentShader:`varying vec2 vUv; uniform sampler2D uMap; uniform vec2 uVelocity;
+      void main(){
+        vec4 sum=vec4(0.0); float weight=0.0;
+        for(int i=0;i<24;i++){float t=float(i)/23.0-.5; float w=1.0-abs(t)*.9; sum+=texture2D(uMap,vUv-uVelocity*t)*w; weight+=w;}
+        sum/=weight;
+        gl_FragColor=vec4(sum.rgb/max(sum.a,.0001),sum.a);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+        gl_FragColor.rgb*=gl_FragColor.a;
+      }`});
+    const scene=new THREE.Scene();const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),material);quad.frustumCulled=false;scene.add(quad);
+    return {target,uniforms,material,scene,quad,camera:new THREE.OrthographicCamera(-1,1,1,-1,0,1),point:new THREE.Vector3(),last:new THREE.Vector2(),velocity:new THREE.Vector2(),primed:false};
+  },[]);
+  useEffect(()=>()=>{blur.target.dispose();blur.material.dispose();blur.quad.geometry.dispose();},[blur]);
+  return blur;
+}
 function SculptureComposite({motion}: {motion: JourneyRef}) {
   const {gl,scene,camera,size}=useThree();
   const target=useMemo(()=>new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType}),[]);
   const sculpture=useMemo(()=>({texture:{value:target.texture},size:{value:new THREE.Vector2(1,1)}}),[target]);
+  const blur=useMotionBlur();
   useEffect(()=>{
     const ratio=gl.getPixelRatio();target.setSize(Math.round(size.width*ratio),Math.round(size.height*ratio));
+    blur.target.setSize(target.width,target.height);
     sculpture.size.value.set(target.width,target.height);
-  },[gl,size,target,sculpture]);
+  },[gl,size,target,sculpture,blur]);
   useEffect(()=>()=>{target.dispose();document.querySelector<HTMLElement>('.box-foreground')?.style.removeProperty('filter');},[target]);
-  useFrame(()=>{
+  useFrame((_,delta)=>{
     const glow=motion.current.glow*motion.current.head;
     scene.traverse(object=>{if(object instanceof THREE.Light)object.layers.enable(2);});
     const previous=gl.getRenderTarget();
     camera.layers.set(2);gl.setRenderTarget(target);gl.setClearColor(0x000000,0);gl.clear();
     if(glow>.001)gl.render(scene,camera);
-    camera.layers.set(1);gl.setRenderTarget(previous);gl.clear();gl.render(scene,camera);
+    camera.layers.set(1);
+    // Hero entrance: smear the box along its real on-screen velocity, as a 1/90 s camera shutter would
+    // (normalised by frame time, so slow frames don't exaggerate it).
+    const box=scene.getObjectByName('travelling-sculptural-box');
+    let velocity=0;
+    if(box){
+      box.updateMatrixWorld();
+      blur.point.setFromMatrixPosition(box.matrixWorld).project(camera);
+      const x=blur.point.x*.5+.5, y=blur.point.y*.5+.5;
+      const shutter=(1/90)/Math.max(delta,1/240);
+      if(blur.primed){blur.velocity.set((x-blur.last.x)*shutter,(y-blur.last.y)*shutter);velocity=blur.velocity.length();}
+      blur.last.set(x,y);blur.primed=true;
+    }
+    if(motion.current.blur>.001&&velocity>.0015){
+      blur.uniforms.uVelocity.value.copy(blur.velocity).multiplyScalar(motion.current.blur).clampLength(0,.14);
+      gl.setRenderTarget(blur.target);gl.clear();gl.render(scene,camera);
+      gl.setRenderTarget(previous);gl.clear();gl.render(blur.scene,blur.camera);
+    } else {gl.setRenderTarget(previous);gl.clear();gl.render(scene,camera);}
     const element=document.querySelector<HTMLElement>('.box-foreground');
     if(element){
       element.dataset.sculptureBlend=glow.toFixed(3);
@@ -187,11 +241,11 @@ function SculptureComposite({motion}: {motion: JourneyRef}) {
   },1);
   return <><CardboardBox motion={motion} sculpture={sculpture}/><Suspense fallback={null}><IlluminatedMind motion={motion}/></Suspense></>;
 }
-export function ForegroundBox({ motion, paused }: { motion: JourneyRef; paused: boolean }) {
+export function ForegroundBox({ motion, paused, onRendered }: { motion: JourneyRef; paused: boolean; onRendered?: () => void }) {
   const [visible,setVisible]=useState(true);
   useEffect(()=>{const update=()=>setVisible(!document.hidden);document.addEventListener('visibilitychange',update);return()=>document.removeEventListener('visibilitychange',update);},[]);
   return <Canvas frameloop={visible&&!paused?'always':'never'} dpr={[1,1.5]} gl={{alpha:true,antialias:true,powerPreference:'high-performance'}} camera={{position:[0,0,10],fov:40,near:.1,far:40}} aria-hidden="true">
     <ambientLight intensity={.5}/><directionalLight position={[-4,5,6]} intensity={1.8} color="#fff7e8"/><directionalLight position={[4,1,3]} intensity={.8} color="#e3eaff"/>
-    <SculptureComposite motion={motion}/><ForegroundEnvironment/>
+    <SculptureComposite motion={motion}/><ForegroundEnvironment/><HeroImpactFX motion={motion}/><RenderedSignal onRendered={onRendered}/>
   </Canvas>;
 }

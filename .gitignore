@@ -13,4 +13,6 @@ recovery/
 Style-refs/
 /fonts/
 *.mp4
+# The hero dust-impact clip ships with the site.
+!public/media/dust-impact.mp4
 *.log

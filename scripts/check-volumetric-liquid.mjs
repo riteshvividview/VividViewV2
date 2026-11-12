@@ -7,7 +7,8 @@ const errors=[],mediaRequests=[];
 await fs.mkdir('artifacts/journey',{recursive:true});
 page.on('pageerror',e=>errors.push(e.message));
 page.on('console',m=>{if(m.type()==='error'||m.text().includes('buffers too small'))errors.push(m.text())});
-page.on('request',r=>{if(/\.(mp4|webm)(\?|$)/.test(r.url()))mediaRequests.push(r.url())});
+// The hero's dust-impact clip is the one sanctioned video; anything else (e.g. the desolve.mp4 reference) must never load.
+page.on('request',r=>{if(/\.(mp4|webm)(\?|$)/.test(r.url())&&!r.url().endsWith('/media/dust-impact.mp4'))mediaRequests.push(r.url())});
 try{
  await page.goto('http://localhost:3001',{waitUntil:'networkidle'});
  await page.waitForFunction(()=>Number(document.querySelector('.journey-canvas')?.dataset.fluidTriangles)>0);
@@ -40,5 +41,5 @@ try{
  await page.emulateMedia({reducedMotion:'reduce'});await page.waitForFunction(()=>document.querySelectorAll('canvas').length===0);
  assert.deepEqual(errors,[]);assert.deepEqual(mediaRequests,[]);
  await fs.writeFile('artifacts/journey/volume-verification.json',JSON.stringify({initial,final,errors,mediaRequests},null,2));
- console.log('PASS: real-time geometry updates, hover/recovery, mobile, reduced-motion cleanup, zero video requests, no browser errors');
+ console.log('PASS: real-time geometry updates, hover/recovery, mobile, reduced-motion cleanup, no video requests besides the hero dust clip, no browser errors');
 }finally{await browser.close()}

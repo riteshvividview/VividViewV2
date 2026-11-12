@@ -10,13 +10,13 @@ export const agency = {
 };
 
 export const services = [
-  { name: 'BRANDING', category: 'Be unmistakable.', text: 'Brand strategy, identity, guidelines and packaging that give your business a consistent, recognisable presence.', tags: ['Strategy', 'Visual identity', 'Packaging'], word: 'SEE' },
-  { name: 'DIGITAL MARKETING', category: 'Turn attention into action.', text: 'Social media, paid campaigns and content strategy, supported by analytics and conversion optimisation.', tags: ['Social media', 'Paid campaigns', 'Analytics'], word: 'CONNECT' },
-  { name: 'E-COMMERCE', category: 'Make the next click count.', text: 'SEO, visual content and conversion-focused thinking to support your online store and sales journey.', tags: ['Conversion', 'Content', 'Sales growth'], word: 'GROW' },
-  { name: 'MEDIA PRODUCTION', category: 'Make them feel it.', text: 'Photography, films, reels and editing that bring your brand story into focus.', tags: ['Photography', 'Video', 'VFX & CGI'], word: 'CREATE' },
-  { name: 'GRAPHIC DESIGN', category: 'Every detail speaks.', text: 'Marketing materials, illustrations, packaging and social graphics, designed as one connected visual language.', tags: ['Illustration', 'Print', 'Social graphics'], word: 'CREATE' },
-  { name: 'WEB & APP DEVELOPMENT', category: 'Built for the next move.', text: 'Custom digital experiences with considered interfaces, CMS integration and ongoing maintenance.', tags: ['UI / UX', 'Development', 'CMS'], word: 'BUILD' },
-  { name: 'SEO', category: 'Get found. Stay relevant.', text: 'Search optimisation that helps the right audience discover your business.', tags: ['Search', 'Visibility', 'Organic growth'], word: 'GROW' },
+  { name: 'BRANDING', image: '/images/services/branding.webp', category: 'Be unmistakable.', text: 'Brand strategy, identity, guidelines and packaging that give your business a consistent, recognisable presence.', tags: ['Strategy', 'Visual identity', 'Packaging'], word: 'SEE' },
+  { name: 'DIGITAL MARKETING', image: '/images/services/digital-marketing.webp', category: 'Turn attention into action.', text: 'Social media, paid campaigns and content strategy, supported by analytics and conversion optimisation.', tags: ['Social media', 'Paid campaigns', 'Analytics'], word: 'CONNECT' },
+  { name: 'E-COMMERCE', image: '/images/services/ecommerce.webp', category: 'Make the next click count.', text: 'SEO, visual content and conversion-focused thinking to support your online store and sales journey.', tags: ['Conversion', 'Content', 'Sales growth'], word: 'GROW' },
+  { name: 'MEDIA PRODUCTION', image: '/images/services/media-production.webp', category: 'Make them feel it.', text: 'Photography, films, reels and editing that bring your brand story into focus.', tags: ['Photography', 'Video', 'VFX & CGI'], word: 'CREATE' },
+  { name: 'GRAPHIC DESIGN', image: '/images/services/graphic-design.webp', category: 'Every detail speaks.', text: 'Marketing materials, illustrations, packaging and social graphics, designed as one connected visual language.', tags: ['Illustration', 'Print', 'Social graphics'], word: 'CREATE' },
+  { name: 'WEB & APP DEVELOPMENT', image: '/images/services/web-app-development.webp', category: 'Built for the next move.', text: 'Custom digital experiences with considered interfaces, CMS integration and ongoing maintenance.', tags: ['UI / UX', 'Development', 'CMS'], word: 'BUILD' },
+  { name: 'SEO', image: '/images/services/seo.webp', category: 'Get found. Stay relevant.', text: 'Search optimisation that helps the right audience discover your business.', tags: ['Search', 'Visibility', 'Organic growth'], word: 'GROW' },
 ];
 
 export const projects = [

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { JourneyRef } from './types';
+import { BOX_HALF, boxScaleFactor } from './heroIntro';
 
 function finishTexture(color: string, lettering = false) {
   const canvas=document.createElement('canvas');canvas.width=canvas.height=1024;
@@ -65,9 +66,11 @@ export default function CardboardBox({ motion, sculpture }: { motion: JourneyRef
 
     const small = size.width < 760;
 
-    root.current.position.set(state.x * viewport.width, state.y * viewport.height, .7);
-    root.current.rotation.set(state.rx, state.ry, state.rz);
-    root.current.scale.setScalar(state.scale * (small ? .75 : 1.1));
+    // Scroll pose plus the hero-entrance offsets (neutral once the entrance ends). Squash pivots on the base.
+    const scale = state.scale * boxScaleFactor(small);
+    root.current.position.set((state.x + state.introX) * viewport.width, (state.y + state.introY) * viewport.height - (1 - state.squash) * BOX_HALF * scale, .7);
+    root.current.rotation.set(state.rx + state.introRx, state.ry + state.introRy, state.rz + state.introRz);
+    root.current.scale.set(scale * state.bulge, scale * state.squash, scale * state.bulge);
     
     const outer = THREE.MathUtils.smoothstep(state.open, 0, .46);
     const inner = THREE.MathUtils.smoothstep(state.open, .54, 1);

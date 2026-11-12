@@ -5,8 +5,11 @@ import dynamic from 'next/dynamic';
 import { ArrowUpRight, ArrowDown, ArrowLeft, ArrowRight, Plus, Minus, X, Check } from 'lucide-react';
 import { initialJourney } from './journey/types';
 import { useJourney } from './journey/useJourney';
+import { useHeroIntro } from './journey/useHeroIntro';
 import StaticBox from './journey/StaticBox';
 import BrandGallery from './BrandGallery';
+import PageLoader, { type SceneState } from './PageLoader';
+import ServiceHoverPreview from './ServiceHoverPreview';
 import {agency, services, team, stories} from './agencyContent';
 
 const ForegroundBox = dynamic(() => import('./journey/JourneyScene').then(module => module.ForegroundBox), { ssr: false });
@@ -32,16 +35,27 @@ export default function Home() {
   const [sceneReady, setSceneReady] = useState(false);
   const [sceneFailed, setSceneFailed] = useState(false);
   const [showCredits, setShowCredits] = useState(false);
+  const [motionKnown, setMotionKnown] = useState(false);
+  const [backgroundRendered, setBackgroundRendered] = useState(false);
+  const [boxRendered, setBoxRendered] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [loaderLifting, setLoaderLifting] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const contactTrigger = useRef<HTMLElement | null>(null);
   const motion = useRef({ ...initialJourney });
   const onSceneReady = useCallback(() => setSceneReady(true), []);
   const onSceneFailure = useCallback(() => { setSceneFailed(true); setSceneReady(false); }, []);
+  const onBackgroundRendered = useCallback(() => setBackgroundRendered(true), []);
+  const onBoxRendered = useCallback(() => setBoxRendered(true), []);
+  const onPageLoaded = useCallback(() => setPageLoading(false), []);
+  const onLoaderLift = useCallback(() => setLoaderLifting(true), []);
   const animated = motionEnabled && !sceneFailed;
-  useJourney(motion, animated, contactOpen);
+  const loaderScene: SceneState = !motionKnown ? 'pending' : !animated ? 'off' : backgroundRendered && boxRendered ? 'ready' : 'pending';
+  const introPlaying = useHeroIntro(motion, animated, loaderLifting);
+  useJourney(motion, animated, contactOpen || pageLoading || introPlaying);
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setMotionEnabled(!preference.matches);
+    const update = () => { setMotionEnabled(!preference.matches); setMotionKnown(true); };
     update(); preference.addEventListener('change', update);
     return () => preference.removeEventListener('change', update);
   }, []);
@@ -53,8 +67,10 @@ export default function Home() {
   function closeMenu() { setMenuOpen(false); }
 
   return <div className={`experience ${animated ? 'motion-on' : 'motion-off'} ${sceneReady ? 'scene-loaded' : ''}`}>
-    {animated && <div className="journey-canvas" aria-hidden="true"><SceneBoundary onFailure={onSceneFailure}><JourneyScene motion={motion} onReady={onSceneReady} paused={contactOpen}/></SceneBoundary></div>}
-    {animated && <div className="box-foreground" aria-hidden="true"><SceneBoundary onFailure={onSceneFailure}><ForegroundBox motion={motion} paused={contactOpen}/></SceneBoundary></div>}
+    {animated && <div className="journey-canvas" aria-hidden="true"><SceneBoundary onFailure={onSceneFailure}><JourneyScene motion={motion} onReady={onSceneReady} paused={contactOpen} onRendered={onBackgroundRendered}/></SceneBoundary></div>}
+    {animated && <div className="box-foreground" aria-hidden="true"><SceneBoundary onFailure={onSceneFailure}><ForegroundBox motion={motion} paused={contactOpen} onRendered={onBoxRendered}/></SceneBoundary></div>}
+    {pageLoading && <PageLoader scene={loaderScene} onDone={onPageLoaded} onLeave={onLoaderLift}/>}
+    <noscript><style>{'.page-loader{display:none}'}</style></noscript>
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="header">
       <button className="menu-toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} aria-controls="main-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={18}/> : <span className="menu-dots"><i/><i/><i/><i/></span>}<span>{menuOpen ? 'CLOSE' : 'EXPLORE'}</span></button>
@@ -90,7 +106,7 @@ export default function Home() {
         <div className="section-label"><span>[02 — IDEAS IN MOTION]</span><span>CONNECTED THINKING.</span><span>NO THINKING IN SILOS.</span></div>
         <div className="services-heading"><h2 id="services-title"><Words>NO BOXES.</Words><br/><span><Words>NO LIMITS.</Words></span></h2><p data-reveal>From a spark of an idea<br/>to a shift in your business.<br/>This is how we make it happen.</p></div>
         <div className="service-layout"><div className="journey-window"><span className="window-corner">+</span><span className="window-label">A DIFFERENT WAY TO {services[service ?? 0].word}.</span><span className="window-note">IDEAS ARE FLUID.<br/>GIVE THEM ROOM TO MOVE.</span><div className="service-static"><StaticBox/></div></div><div className="service-list">{services.map((item, index) => <article className={`service-item ${service === index ? 'active' : ''}`} key={item.name}><button className="service-toggle" aria-expanded={service === index} aria-controls={`service-panel-${index}`} id={`service-toggle-${index}`} onClick={() => setService(current => current === index ? null : index)}><span className="service-number">/ 0{index + 1}</span><span><small>{item.category}</small><strong>{item.name}</strong></span><span className="service-plus">{service === index ? <Minus size={19}/> : <Plus size={19}/>}</span></button><div className="service-panel" id={`service-panel-${index}`} role="region" aria-labelledby={`service-toggle-${index}`} aria-hidden={service !== index} inert={service !== index}><div className="service-panel-inner"><div className="service-panel-content"><p>{item.text}</p><div className="tags">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div></div></div></article>)}</div></div>
-      </section>
+      <ServiceHoverPreview images={services.map(item => ({ src: item.image, alt: item.name }))}/></section>
 
       <section id="people" className="people" aria-labelledby="people-title"><div className="people-stage section-pad">
         <div className="section-label"><span>[03 — THE MINDS BEHIND IT]</span><span>A DIFFERENT STATE OF MIND.</span><span>LET THERE BE IDEAS.</span></div>

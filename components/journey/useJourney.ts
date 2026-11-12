@@ -10,10 +10,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function useJourney(motion: JourneyRef, enabled: boolean, paused: boolean) {
   const lenis = useRef<Lenis | null>(null);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   useEffect(() => {
     if (!enabled) return;
     const smooth = new Lenis({ duration: 1.08, anchors: true, smoothWheel: true });
     lenis.current = smooth;
+    if (pausedRef.current) smooth.stop(); // e.g. created while the page loader is still up
     smooth.on('scroll', ScrollTrigger.update);
     const tick = (time: number) => smooth.raf(time * 1000);
     gsap.ticker.add(tick);
