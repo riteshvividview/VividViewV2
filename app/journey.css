@@ -198,3 +198,41 @@ body{background:#e7e6df;color:var(--journey-ink)}
  .agency-links{gap:18px;font-size:8px}.agency-links>span{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.gallery-page{transform:none!important}.gallery-track{will-change:auto}}
+
+/* Clearer editorial hierarchy and breathing room around the moving artwork. */
+:root{--acid:#ecff9c}
+.service-toggle strong{font-family:var(--body);font-size:clamp(25px,3.1vw,48px);font-weight:600;letter-spacing:-.045em;line-height:1.15}
+.project-story-copy{font-family:var(--body);font-size:clamp(24px,2.45vw,39px);font-weight:500;line-height:1.35;letter-spacing:-.035em}
+.services-heading,.brands-intro{margin-bottom:80px}
+.service-toggle{padding-top:24px;padding-bottom:24px}
+.campaign-meta{line-height:1.7;padding-top:16px}
+.header-cta .square-arrow,.service-toggle[aria-expanded=true] .service-plus{background:#ecff9c;color:#20221f}
+@media(min-width:761px){.mind-copy{padding-left:24px}.gallery-controls{margin-top:30px}.brands-bottom{margin-top:80px}}
+@media(max-width:760px){.services-heading,.brands-intro{margin-bottom:45px}.service-toggle strong{font-size:25px}.project-story-copy{font-size:24px}}
+
+:root{--body:'Poppins',Arial,sans-serif}
+.service-panel{display:grid;grid-template-rows:0fr;padding:0;opacity:0;visibility:hidden;transition:grid-template-rows .5s cubic-bezier(.22,1,.36,1),opacity .3s ease,visibility 0s .5s}
+.service-item.active .service-panel{grid-template-rows:1fr;opacity:1;visibility:visible;transition:grid-template-rows .5s cubic-bezier(.22,1,.36,1),opacity .35s ease .08s,visibility 0s}
+.service-panel-inner{min-height:0;overflow:hidden}
+.service-panel-content{padding:0 35px 30px 44px}
+.service-plus{transition:background-color .3s,color .3s}
+@media(max-width:760px){.service-panel-content{padding:0 10px 25px 33px}}
+@media(prefers-reduced-motion:reduce){.service-panel,.service-item.active .service-panel{transition:none}}
+
+.brand-editorial{width:81%;padding-top:10px}
+.brand-gallery-note{display:flex;justify-content:space-between;gap:24px;border-top:1px solid var(--journey-line);padding:18px 0 42px;font-size:9px;letter-spacing:.08em}
+.brand-masonry{columns:2;column-gap:7%}
+.brand-artwork{break-inside:avoid;margin:0 0 64px;display:inline-block;width:100%;vertical-align:top}
+.brand-artwork-image{width:100%;height:auto;overflow:visible;background:transparent}
+.brand-artwork-image img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;transform:none}
+.brand-artwork-caption{display:flex;align-items:flex-start;gap:16px;padding-top:18px;border-bottom:1px solid var(--journey-line);padding-bottom:18px}
+.brand-artwork-number{font-size:9px;padding-top:5px;opacity:.6}
+.brand-artwork-caption>div{flex:1}
+.brand-artwork-caption h3{font-family:var(--body);font-size:clamp(18px,1.7vw,27px);font-weight:500;line-height:1.25;letter-spacing:-.035em}
+.brand-artwork-caption p{font-size:10px;margin-top:7px;opacity:.7}
+.brand-artwork-caption svg{transition:transform .3s}
+.brand-artwork a:hover svg{transform:translate(3px,-3px)}
+.brand-artwork a:focus-visible{display:block;outline:2px solid currentColor;outline-offset:6px}
+.motion-on :is(.brand-gallery-note,.brand-artwork-caption){mix-blend-mode:difference;color:#fff}
+@media(min-width:761px){.brand-artwork:nth-child(3n+2){width:88%;margin-left:12%}}
+@media(max-width:760px){.brand-editorial{width:100%;padding-right:0}.brand-masonry{columns:1}.brand-artwork{margin-bottom:40px}.brand-gallery-note{font-size:7px;padding-bottom:25px}.brand-artwork-caption h3{font-size:21px}}

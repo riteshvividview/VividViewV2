@@ -92,7 +92,8 @@ function Studio({ motion, onReady }: { motion: JourneyRef; onReady: () => void }
   const { gl, scene, camera, size } = useThree();
   const frame = useRef(0);
   const effects = useMemo(() => {
-    const composer = new EffectComposer(gl);
+    const renderTarget = new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:4});
+    const composer = new EffectComposer(gl,renderTarget);
     const render = new RenderPass(scene, camera);
     const modelCamera: THREE.Camera = camera.clone(); modelCamera.layers.set(2);
     const modelPass = new RenderPass(scene, modelCamera); modelPass.clear=false; modelPass.clearDepth=true;
@@ -111,7 +112,7 @@ function Studio({ motion, onReady }: { motion: JourneyRef; onReady: () => void }
     onReady();
     return () => { scene.environment = null; target.dispose(); room.dispose(); pmrem.dispose(); };
   }, [gl, scene, onReady]);
-  useEffect(() => { effects.composer.setSize(size.width, size.height); effects.composer.setPixelRatio(Math.min(window.devicePixelRatio, size.width < 760 ? 1.25 : 1.5)); }, [effects, size]);
+  useEffect(() => { effects.composer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio,1.5),2)); effects.composer.setSize(size.width, size.height); }, [effects, size]);
   useEffect(() => () => { effects.composer.dispose(); effects.bloom.dispose(); effects.output.dispose(); }, [effects]);
   useFrame((_, delta) => {
     effects.modelCamera.copy(camera); effects.modelCamera.layers.set(2);

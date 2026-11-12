@@ -14,10 +14,10 @@ export default function SilverFluid({ motion, paused = false }: { motion: Journe
   const pointer = useRef(new THREE.Vector2(5, 5));
   const resources = useMemo(() => {
     const material = new THREE.MeshPhysicalMaterial({
-      color: '#f2f5f6', metalness: .16, roughness: .025,
-      transmission: .88, thickness: .28, ior: 1.52,
+      color: '#f2f5f6', metalness: .12, roughness: .075,
+      transmission: .88, thickness: .12, ior: 1.38,
       attenuationColor: '#e1e8ec', attenuationDistance: 8,
-      clearcoat: 1, clearcoatRoughness: .02,
+      clearcoat: 1, clearcoatRoughness: .09,
       iridescence: 1, iridescenceIOR: 1.4, iridescenceThicknessRange: [220, 620],
       envMapIntensity: 1.65, side: THREE.FrontSide,
     });
@@ -72,7 +72,7 @@ export default function SilverFluid({ motion, paused = false }: { motion: Journe
     const state = motion.current;
     resources.brightness.value=1-.55*THREE.MathUtils.smoothstep(state.head,0,1);
     const journey = THREE.MathUtils.smoothstep(state.hero, .25, .85);
-    const radius = viewport.height * (.59 - journey * .12);
+    const radius = viewport.height * (.56 - journey * .16);
     mesh.position.set(THREE.MathUtils.lerp(.56, state.liquidX * .65, journey) * viewport.width, state.liquidY * viewport.height * .45 * journey, -1.2);
     mesh.scale.setScalar(radius * 1.2);
     mesh.rotation.y = resources.time * .25;

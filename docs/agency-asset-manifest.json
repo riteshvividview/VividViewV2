@@ -58,5 +58,29 @@
     "source": "https://framerusercontent.com/images/2gAAyVbI2Y7gBWNO6ztH91fY2w.png?width=1628&height=875",
     "page": "https://thevividview.in/",
     "sha256": "4db37f867227e6ecd1b84fbc804fd1c06db3ff326e1c0d1982c64d20afbca681"
+  },
+  {
+    "path": "public/images/agency/360-bar-kitchen.webp",
+    "source": "https://framerusercontent.com/images/zTyIxhcBCcTD9Vuzssom2kOmH6Q.jpg?width=1400&height=600",
+    "page": "https://thevividview.in/branding/360-bar-kitchen",
+    "sha256": "e1ffe4f2a6dd1b196ef7571aef442fe4e8fceb551351ee7799c4af35ee2e2e59"
+  },
+  {
+    "path": "public/images/agency/soma.webp",
+    "source": "https://framerusercontent.com/images/ILtCOgvC82xdKy92X6Ic8n7sPk.jpg?width=1400&height=600",
+    "page": "https://thevividview.in/branding/soma",
+    "sha256": "657485f8f6c9a5e87b70968850604ada8d7bd3064c8b0847dc828009b013734f"
+  },
+  {
+    "path": "public/images/agency/advaya.webp",
+    "source": "https://framerusercontent.com/images/3ROly1c8wfhk1cDUgIpiJHuEpE.jpg?width=1400&height=600",
+    "page": "https://thevividview.in/branding/advaya",
+    "sha256": "8df13822e5244a2ce8c540bee731f75fa422ff822b7166ecfc472d17e9a7aba9"
+  },
+  {
+    "path": "public/images/agency/nebesa.webp",
+    "source": "https://framerusercontent.com/images/Mbsyn5b5VDSmyWjJk2t9HmqWo.jpg?width=1400&height=600",
+    "page": "https://thevividview.in/branding/nebesa",
+    "sha256": "864e29e0e500703a9ac574a17601697408e2f897237451d6e9cffded40b2de32"
   }
 ]

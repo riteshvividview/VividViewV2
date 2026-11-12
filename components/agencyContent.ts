@@ -20,6 +20,10 @@ export const services = [
 ];
 
 export const projects = [
+  {"name":"360 Bar & Kitchen","fullName":"360 Bar & Kitchen","image":"/images/agency/360-bar-kitchen.webp","category":"Brand identity","line":"A distinct point of view.","href":"https://thevividview.in/branding/360-bar-kitchen","position":"50% 50%"},
+  {"name":"Soma","fullName":"Soma","image":"/images/agency/soma.webp","category":"Brand identity","line":"A distinct point of view.","href":"https://thevividview.in/branding/soma","position":"50% 50%"},
+  {"name":"Advaya","fullName":"Advaya","image":"/images/agency/advaya.webp","category":"Brand identity","line":"A distinct point of view.","href":"https://thevividview.in/branding/advaya","position":"50% 50%"},
+  {"name":"Nebesa","fullName":"Nebesa","image":"/images/agency/nebesa.webp","category":"Brand identity","line":"A distinct point of view.","href":"https://thevividview.in/branding/nebesa","position":"50% 50%"},
   { name: 'Kandasami', fullName: 'Kandasami Kanjivaram', image: '/images/agency/kandasami.webp', category: 'Media production', line: 'Tradition, in a new light.', href: 'https://thevividview.in/media-production/kandasami', position: '50% 0%' },
   { name: 'Hungry Broz', fullName: 'Hungry Broz', image: '/images/agency/hungry-broz.webp', category: 'Branding & packaging', line: 'Big appetite. Bigger identity.', href: 'https://thevividview.in/branding/hungry-broz', position: '50% 50%' },
   { name: 'Thvani', fullName: 'Thvani', image: '/images/agency/thvani.webp', category: 'Branding & design', line: 'Nature meets mindful luxury.', href: 'https://thevividview.in/branding/thvani', position: '50% 50%' },

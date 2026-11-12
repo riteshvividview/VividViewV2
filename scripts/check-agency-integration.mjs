@@ -12,7 +12,7 @@ try{
   await page.goto('http://localhost:3001',{waitUntil:'networkidle'});
   assert.equal(await page.locator('main>section').count(),5);
   assert.equal(await page.locator('.wordmark img').count(),2);
-  assert.equal(await page.locator('.campaign').count(),6);
+  assert.equal(await page.locator('.brand-artwork').count(),10);
   assert.equal(await page.locator('.service-toggle').count(),7);
   for(const img of await page.locator('img').evaluateAll(elements=>elements.map(e=>e.getAttribute('src')))){
     const response=await page.request.get('http://localhost:3001'+img);
@@ -29,15 +29,12 @@ try{
     assert.equal(await page.locator(`#service-panel-${i}`).isVisible(),false);
   }
   await page.locator('.brand-gallery').scrollIntoViewIfNeeded();
-  await page.getByRole('button',{name:'Next projects',exact:true}).click();
-  await page.waitForFunction(()=>Number(document.querySelector('.brand-gallery').dataset.galleryPosition)>.99);
-  assert.equal(await page.locator('.gallery-page').nth(1).getAttribute('aria-hidden'),'false');
-  const gallery=await page.locator('.gallery-viewport').boundingBox();
-  await page.mouse.move(gallery.x+gallery.width*.8,gallery.y+100);
-  await page.mouse.down();await page.mouse.move(gallery.x+gallery.width*.2,gallery.y+105,{steps:15});await page.mouse.up();
-  await page.waitForFunction(()=>Number(document.querySelector('.brand-gallery').dataset.galleryPosition)>1.99);
-  await page.getByRole('button',{name:'Previous projects',exact:true}).click();
-  await page.getByRole('button',{name:'Previous projects',exact:true}).click();
+  for(const image of await page.locator('.brand-artwork img').all()){
+    await image.scrollIntoViewIfNeeded();
+    await image.evaluate(img=>img.decode());
+    assert.ok(await image.evaluate(img=>Math.abs(img.clientWidth/img.clientHeight-img.naturalWidth/img.naturalHeight)<.025));
+  }
+  await page.locator('.brand-artwork').first().scrollIntoViewIfNeeded();
   await page.screenshot({path:'artifacts/agency/gallery-desktop.png'});
   const firstStory=await page.locator('.project-story-copy').textContent();
   await page.getByRole('button',{name:'Next story',exact:true}).click();
@@ -56,15 +53,6 @@ try{
   await page.locator('.brand-gallery').scrollIntoViewIfNeeded();
   await page.screenshot({path:'artifacts/agency/gallery-mobile.png'});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-  const touchBox=await page.locator('.gallery-viewport').boundingBox();
-  const touchY=Math.max(70,Math.min(600,touchBox.y+140));
-  const touchX=touchBox.x+touchBox.width*.8;
-  const cdp=await page.context().newCDPSession(page);
-  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:touchX,y:touchY}]});
-  for(let i=1;i<=8;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:touchX-touchBox.width*.6*i/8,y:touchY}]});
-  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-  await page.waitForFunction(()=>Number(document.querySelector('.brand-gallery').dataset.galleryPosition)>.99);
-  await cdp.detach();
   await page.getByRole('button',{name:'Open navigation',exact:true}).click();
   await page.locator('#main-navigation a[href="#services"]').click();
   assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');
@@ -77,16 +65,16 @@ try{
   await page.screenshot({path:'artifacts/agency/hero.png'});
   await page.evaluate(()=>window.scrollTo(0,document.querySelector('.brand-gallery').getBoundingClientRect().top+scrollY-innerHeight*.85));
   await page.waitForTimeout(1000);
-  const beforeScroll=Number(await page.locator('.brand-gallery').getAttribute('data-gallery-position'));
+  const beforeScroll=await page.locator('.brand-artwork').first().evaluate(e=>e.getBoundingClientRect().left);
   await page.evaluate(()=>window.scrollBy(0,innerHeight*.65));
   await page.waitForTimeout(1200);
-  assert.ok(Number(await page.locator('.brand-gallery').getAttribute('data-gallery-position'))>beforeScroll+.1);
+  assert.ok(Math.abs(await page.locator('.brand-artwork').first().evaluate(e=>e.getBoundingClientRect().left)-beforeScroll)<1);
   await page.screenshot({path:'artifacts/agency/gallery-motion.png'});
   for(let i=0;i<7;i++){
     const toggle=page.locator('.service-toggle').nth(i);
     if(await toggle.getAttribute('aria-expanded')==='true')await toggle.click();
-    await toggle.click();assert.equal(await page.locator(`#service-panel-${i}`).isVisible(),true);
-    await toggle.click();assert.equal(await page.locator(`#service-panel-${i}`).isVisible(),false);
+    await toggle.click();await page.locator(`#service-panel-${i}`).waitFor({state:"visible"});
+    await toggle.click();await page.locator(`#service-panel-${i}`).waitFor({state:"hidden"});
   }
   await page.waitForTimeout(600);
   await page.evaluate(()=>window.scrollTo(0,document.querySelector('#people').getBoundingClientRect().top+scrollY+innerHeight*.8));
@@ -104,6 +92,6 @@ try{
   await page.waitForFunction(()=>Number(document.querySelector('.journey-canvas')?.dataset.sculptureDissolve)<.01);
   assert.equal(await page.locator('.journey-canvas').getAttribute('data-sculpture-visible'),'true');
   assert.deepEqual(errors,[]);
-  await fs.writeFile('artifacts/agency/verification.json',JSON.stringify({status:'passed',errors,checks:['real assets','seven keyboard accordions','gallery buttons and drag','mobile navigation','brief download and email handoff','stories','shader exit and reverse','desktop and mobile layout']},null,2));
+  await fs.writeFile('artifacts/agency/verification.json',JSON.stringify({status:'passed',errors,checks:['real assets','seven keyboard accordions','ten uncropped project images and stable horizontal position','mobile navigation','brief download and email handoff','stories','shader exit and reverse','desktop and mobile layout']},null,2));
   console.log('PASS: agency content, gallery, accordions, contact, responsive layout and reversible sculpture dissolve');
 }finally{await browser.close()}

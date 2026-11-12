@@ -57,13 +57,14 @@ export class LiquidVolume {
             * Math.cos(qy * 3.8 - z * 3.4 - t * .7);
           const fold2 = Math.sin(qx * 7.2 - qy * 3.5 + z * 4.3 - t * .8);
           const shellRadius = .715 + front * (.115 * folds + .015 * fold2);
-          const thickness = .073 + .016 * (.5 + .5 * Math.sin(qy * 5 + z * 4 + t));
-          let distance = Math.abs(r - shellRadius) - thickness;
+          const thickness = .095 + .012 * (.5 + .5 * Math.sin(qy * 5 + z * 4 + t));
+          const shellOffset = r - shellRadius;
+          let distance = Math.sqrt(shellOffset * shellOffset + .0004) - thickness;
           for (const opening of this.openings) {
             const hx = qx - opening.x + Math.sin(qy * 4 + opening.phase + z * 2) * .045;
             const hy = qy - opening.y + Math.sin(qx * 3.8 - opening.phase + z * 2.4) * .05;
             const hole = Math.sqrt(hx * hx + hy * hy * opening.stretch) - opening.radius;
-            distance = smoothMaximum(distance, -hole, .27);
+            distance = smoothMaximum(distance, -hole, .15);
           }
           field[index] = -distance * 100;
         }

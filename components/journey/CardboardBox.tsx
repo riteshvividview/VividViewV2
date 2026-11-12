@@ -9,7 +9,7 @@ function finishTexture(color: string, lettering = false) {
   const canvas=document.createElement('canvas');canvas.width=canvas.height=1024;
   const ctx=canvas.getContext('2d')!;
   ctx.fillStyle=color;ctx.fillRect(0,0,1024,1024);
-  ctx.strokeStyle='#181818';ctx.lineWidth=14;ctx.strokeRect(7,7,1010,1010);
+  ctx.strokeStyle='#292b2c';ctx.lineWidth=4;ctx.strokeRect(2,2,1020,1020);
   if(lettering){
     ctx.fillStyle='#f2f0e9';ctx.font='900 128px Arial';
     ctx.fillText('IDEAS',90,350);ctx.fillText('WITHOUT',90,492);ctx.fillText('LIMITS.',90,634);
@@ -28,13 +28,14 @@ export default function CardboardBox({ motion, sculpture }: { motion: JourneyRef
   const resources = useMemo(() => {
     const maps = [finishTexture('#444440'), finishTexture('#292927',true), finishTexture('#353532'), finishTexture('#4b4b46'), finishTexture('#f4f2eb')];
     const glow = {value: 0};
-    const materials = maps.map(map => new THREE.MeshBasicMaterial({ map, toneMapped: false }));
+    const materials = maps.map(map => new THREE.MeshPhysicalMaterial({ map, roughness: .32, metalness: .22, clearcoat: .65, clearcoatRoughness: .22, envMapIntensity: 1.1 }));
     materials.forEach(material => {
       material.onBeforeCompile=shader=>{
         shader.uniforms.uSculptureGlow=glow;
         shader.uniforms.uSculptureMap=sculpture.texture;
         shader.uniforms.uSculptureSize=sculpture.size;
         shader.fragmentShader='uniform float uSculptureGlow; uniform sampler2D uSculptureMap; uniform vec2 uSculptureSize;\n'+shader.fragmentShader;
+        shader.fragmentShader=shader.fragmentShader.replace('#include <opaque_fragment>', 'outgoingLight=mix(outgoingLight,diffuseColor.rgb,uSculptureGlow);\n#include <opaque_fragment>');
         shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>', `
           #include <color_fragment>
           vec3 glowingFace=mix(diffuseColor.rgb,vec3(.91,.97,1.),uSculptureGlow*.86);

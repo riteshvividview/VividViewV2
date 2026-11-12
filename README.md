@@ -9,7 +9,7 @@ Requires Node.js 20.9 or newer. Run `npm ci`, then `npm run dev` and open http:/
 ## Homepage
 
 - Scroll-driven four-flap box, live glass liquid and sculpture dissolve.
-- Six real client projects in a draggable, scroll-driven gallery.
+- Ten real client projects in an asymmetric gallery with uncropped, naturally sized images.
 - Seven service accordions, team information and verified project stories.
 - Responsive layouts and reduced-motion fallbacks.
 - Downloadable project brief and email-draft handoff; no backend email delivery is configured.

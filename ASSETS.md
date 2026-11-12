@@ -60,3 +60,4 @@ Source: https://thevividview.in. Public Framer-hosted images were downloaded fro
 - Local raw source HTML/JSON and image selection study: artifacts/source-vivid/.
 
 The final section uses paraphrased project stories, as approved by the user, not attributed client quotations or unverified results. The source site gives inconsistent street addresses, so the homepage uses Hyderabad plus the verified email/phone and a link to the source enquiry form. The project brief is downloaded locally and has an email-draft handoff; it does not silently submit to an unconfigured backend.
+`Poppins` is served locally from Google Fonts (google/fonts, ofl/poppins), under the SIL Open Font License in public/fonts/Poppins-OFL.txt.

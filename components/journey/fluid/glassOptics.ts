@@ -14,8 +14,8 @@ export function applyGlassOptics(material:MeshPhysicalMaterial,brightness:{value
     `);
     shader.fragmentShader=shader.fragmentShader.replace('#include <opaque_fragment>', `
       float rimFacing=clamp(abs(dot(normal,normalize(vViewPosition))),0.,1.);
-      float softRim=1.-smoothstep(.015,.22,rimFacing);
-      outgoingLight=mix(outgoingLight,max(outgoingLight,vec3(.34,.35,.36)),softRim);
+      float softRim=1.-smoothstep(.03,.38,rimFacing);
+      outgoingLight=mix(outgoingLight,max(outgoingLight,vec3(.46,.47,.48)),softRim);
       outgoingLight*=uSectionBrightness;
       #include <opaque_fragment>
     `);
@@ -32,9 +32,9 @@ export function applyGlassOptics(material:MeshPhysicalMaterial,brightness:{value
           textureCubeUV(envMap,envMapRotation*glassG,.065).g,
           textureCubeUV(envMap,envMapRotation*glassB,.065).b
         );
-        totalDiffuse=mix(totalDiffuse,studioGlass*vec3(.97,.985,1.)*.8,.52);
+        totalDiffuse=mix(totalDiffuse,max(studioGlass,vec3(.3))*vec3(.97,.985,1.)*.8,.72);
         float glassFacing=clamp(abs(dot(liquidNormal,liquidView)),0.,1.);
-        float spectralPhase=glassFacing*14.+dot(liquidNormal,vec3(3.,2.,1.))+dot(vWorldPosition,vec3(.6,.8,.4));
+        float spectralPhase=glassFacing*8.+dot(liquidNormal,vec3(2.,1.5,1.))+dot(vWorldPosition,vec3(.6,.8,.4));
         vec3 spectralFilm=.5+.5*cos(spectralPhase+vec3(0.,2.094,4.188));
         float spectralRim=pow(1.-glassFacing,.7);
         totalSpecular+=spectralFilm*spectralRim*.55;
