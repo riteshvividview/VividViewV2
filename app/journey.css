@@ -266,3 +266,9 @@ html.is-page-loading,html.is-page-loading body{overflow:hidden}
 .service-number{white-space:nowrap}
 @media(hover:none),(pointer:coarse){.service-preview{display:none}}
 @media(prefers-reduced-motion:reduce){.service-preview-frame,.service-preview-frame img{transition:opacity .2s ease}.service-preview-frame img{transform:none}}
+
+/* Services hover layering: the title paints above the floating preview; the subline and +/- button stay beneath it.
+   The difference blend moves from the shared wrapper onto each line, so they can sit on different sides of the image. */
+.motion-on .service-toggle>span:nth-child(2){mix-blend-mode:normal}
+.motion-on .service-toggle>span:nth-child(2)>:is(small,strong){mix-blend-mode:difference}
+.service-toggle strong{position:relative;z-index:1}
